@@ -3,7 +3,8 @@ const { app, BrowserWindow, shell } = require('electron');
 const path = require('path');
 
 const isDev = !app.isPackaged;
-// Como tu dev está en 8080, lo dejamos así:
+// Si en dev tu Vite corre en 8081, lánzalo así:
+// ELECTRON_START_URL=http://localhost:8081 npm run start-electron
 const DEV_URL = process.env.ELECTRON_START_URL || 'http://localhost:8080';
 
 function createWindow() {
@@ -14,18 +15,21 @@ function createWindow() {
     minHeight: 600,
     webPreferences: {
       contextIsolation: true,
-      preload: path.join(__dirname, 'preload.cjs')
-    }
+      preload: path.join(__dirname, 'preload.cjs'),
+    },
   });
 
   if (isDev) {
     win.loadURL(DEV_URL);
-    win.webContents.openDevTools({ mode: 'detach' });
+    // Descomenta si quieres abrir DevTools automáticamente
+    // win.webContents.openDevTools({ mode: 'detach' });
   } else {
-    // Carga el build (Vite genera /dist)
-    win.loadFile(path.join(__dirname, '../dist/index.html'));
+    // IMPORTANT: usar resolve + ruta relativa correcta al build de Vite
+    const indexPath = path.resolve(__dirname, '../dist/index.html');
+    win.loadFile(indexPath);
   }
 
+  // Abrir enlaces externos en el navegador
   win.webContents.setWindowOpenHandler(({ url }) => {
     shell.openExternal(url);
     return { action: 'deny' };
@@ -42,4 +46,3 @@ app.whenReady().then(() => {
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit();
 });
-

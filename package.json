@@ -24,8 +24,7 @@
     ],
     "mac": {
       "target": ["dmg", "zip"],
-      "category": "public.app-category.developer-tools",
-      "icon": "build/icon.icns"
+      "category": "public.app-category.developer-tools"
     },
     "win": {
       "target": [
@@ -34,8 +33,7 @@
           "arch": ["x64", "arm64"]
         },
         "zip"
-      ],
-      "icon": "build/icon.ico"
+      ]
     },
     "nsis": {
       "oneClick": false,
